@@ -38,6 +38,84 @@ var collections;
         return ListIteratorImpl;
     }());
     collections.ListIteratorImpl = ListIteratorImpl;
+    var SetIteratorImpl = (function () {
+        function SetIteratorImpl(theSetCollection) {
+            this.theSetCollection = theSetCollection;
+            this.counter = 0;
+        }
+        SetIteratorImpl.prototype.hasNext = function () {
+            return this.counter < this.theSetCollection.size();
+        };
+        SetIteratorImpl.prototype.next = function () {
+            if (this.hasNext()) {
+                return this.theSetCollection[this.counter++];
+            }
+            else {
+                return null;
+            }
+        };
+        return SetIteratorImpl;
+    }());
+    var Collection = (function () {
+        function Collection() {
+            this.list = [];
+        }
+        ;
+        Collection.prototype.add = function (e) {
+            this.list.push(e);
+            return true;
+        };
+        ;
+        Collection.prototype.remove = function (e) {
+            if (this.contains(e)) {
+                var index = this.list.indexOf(e);
+                this.list.splice(index, 1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        ;
+        Collection.prototype.clear = function () {
+            this.list = [];
+        };
+        ;
+        Collection.prototype.contains = function (e) {
+            return this.list.indexOf(e) !== -1;
+        };
+        ;
+        Collection.prototype.isEmpty = function () {
+            return this.size() === 0;
+        };
+        ;
+        Collection.prototype.size = function () {
+            return this.list.length;
+        };
+        ;
+        Collection.prototype.addAll = function (coll) {
+            for (var _i = 0, _a = coll.toArray(); _i < _a.length; _i++) {
+                var item = _a[_i];
+                this.add(item);
+            }
+            return true;
+        };
+        ;
+        Collection.prototype.removeAll = function (coll) {
+            var changed = false;
+            for (var _i = 0, _a = this.toArray(); _i < _a.length; _i++) {
+                var item = _a[_i];
+                if (coll.contains(item)) {
+                    this.remove(item);
+                    changed = true;
+                }
+            }
+            return changed;
+        };
+        ;
+        return Collection;
+    }());
+    collections.Collection = Collection;
     var List = (function () {
         function List() {
             this.list = [];
@@ -228,5 +306,108 @@ var collections;
         return Set;
     }());
     collections.Set = Set;
+    var Entry = (function () {
+        function Entry(key, value) {
+            this.keyValuePair = {};
+            this.keyValuePair[key] = value;
+        }
+        Entry.prototype.getKey = function () {
+            var keyValuePair = this.keyValuePair;
+            var key;
+            for (var prop in keyValuePair) {
+                key = prop;
+            }
+            return key;
+        };
+        Entry.prototype.getValue = function () {
+            var keyValuePair = this.keyValuePair;
+            var value;
+            for (var val in keyValuePair) {
+                value = keyValuePair[val];
+            }
+            return value;
+        };
+        return Entry;
+    }());
+    collections.Entry = Entry;
+    var Map = (function () {
+        function Map() {
+            this.map = {};
+        }
+        Map.prototype.put = function (key, value) {
+            this.map[key] = value;
+            return value;
+        };
+        Map.prototype.get = function (key) {
+            var map = this.map;
+            return map[key];
+        };
+        Map.prototype.remove = function (key) {
+            var value = this.map[key];
+            delete this.map[key];
+            return value;
+        };
+        Map.prototype.clear = function () {
+            this.map = {};
+        };
+        Map.prototype.putAll = function (map) {
+            var mapArr = map.toArray();
+            for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
+                var item = mapArr_1[_i];
+                this.put(item[0], item[1]);
+            }
+        };
+        Map.prototype.size = function () {
+            var map = this.map;
+            var count = 0;
+            for (var item in map) {
+                count++;
+            }
+            return count;
+        };
+        Map.prototype.isEmpty = function () {
+            return this.size() === 0;
+        };
+        Map.prototype.containsKey = function (key) {
+            return key in this.map;
+        };
+        Map.prototype.containsValue = function (value) {
+            var map = this.map;
+            var exists = false;
+            for (var k in map) {
+                if (map[k] === value)
+                    exists = true;
+            }
+            return exists;
+        };
+        Map.prototype.toArray = function () {
+            var mapArr = [];
+            var map = this.map;
+            for (var item in map) {
+                mapArr.push([item, map[item]]);
+            }
+            return mapArr;
+        };
+        Map.prototype.keySet = function () {
+            var keySet = new Set();
+            var mapArr = this.toArray();
+            for (var _i = 0, mapArr_2 = mapArr; _i < mapArr_2.length; _i++) {
+                var item = mapArr_2[_i];
+                keySet.add(item[0]);
+            }
+            return keySet;
+        };
+        Map.prototype.values = function () {
+            var valCollection = new Collection();
+            var mapArr = this.toArray();
+            for (var _i = 0, mapArr_3 = mapArr; _i < mapArr_3.length; _i++) {
+                var item = mapArr_3[_i];
+                valCollection.add(item[1]);
+            }
+            return valCollection;
+        };
+        return Map;
+    }());
+    collections.Map = Map;
 })(collections || (collections = {}));
 //# sourceMappingURL=collections.js.map

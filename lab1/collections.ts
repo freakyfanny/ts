@@ -58,25 +58,25 @@ namespace collections {
      }
 
 
-/*    class SetIteratorImpl implements Iterator<Set<any>> {
+    class SetIteratorImpl implements Iterator<Set<any>> {
       private counter : number = 0;
 
-      constructor(private theDetCollection: Set<any>) {
+      constructor(private theSetCollection: Set<any>) {
 
       }
 
       hasNext() : boolean{
-        return this.counter < this.theDetCollection.length;
+        return this.counter < this.theSetCollection.size();
       }
 
       next() : Set<any> {
         if(this.hasNext()) {
-          return this.theDetCollection[this.counter++];
+          return this.theSetCollection[this.counter++];
         } else {
           return null;
         }
       }
-    }*/
+    }
 
     /**
      * A bunch of objects
@@ -108,6 +108,66 @@ namespace collections {
         clear(): void;
 
     }
+
+    export class Collection<E> implements Collection<E> {
+        protected list: E[];
+
+        constructor() {
+            this.list = [];
+        };
+
+        add(e: E): Boolean {
+            this.list.push(e);
+            return true;
+        };
+
+        remove(e: E): Boolean {
+            if (this.contains(e)) {
+                let index = this.list.indexOf(e);
+                this.list.splice(index, 1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+
+        clear(): void {
+            this.list = [];
+        };
+
+        contains(e: any): boolean {
+            return this.list.indexOf(e) !== -1;
+        };
+
+        isEmpty(): boolean {
+            return this.size() === 0;
+        };
+
+        size(): number {
+            return this.list.length;
+        };
+
+
+        addAll(coll: Collection<E>): boolean {
+            for (let item of coll.toArray()) {
+                this.add(item);
+            }
+            return true;
+        };
+
+        removeAll(coll: Collection<E>): boolean {
+            let changed = false;
+
+            for (let item of this.toArray()) {
+                if (coll.contains(item)) {
+                    this.remove(item);
+                    changed = true;
+                }
+            }
+            return changed;
+
+        };
 
     export class List<T> implements List<T> {
         list : T[] = [];
@@ -310,6 +370,137 @@ namespace collections {
 
       }
 
+      export class Entry<K, V> implements Entry<K, V> {
+        private keyValuePair;
+
+        constructor(key: K, value: V) {
+            this.keyValuePair = {};
+            this.keyValuePair[key] = value;
+        }
+
+        getKey(): K {
+            let keyValuePair = this.keyValuePair;
+            let key;
+            for (let prop in keyValuePair) {
+                key = prop;
+            }
+            return key;
+        }
+
+        getValue(): V {
+            let keyValuePair = this.keyValuePair;
+            let value;
+
+            for (let val in keyValuePair) {
+                value = keyValuePair[val];
+            }
+            return value;
+        }
+    }
+
+    export class Map<K, V> implements Map<K, V> {
+
+        private map;
+
+        constructor() {
+            this.map = {};
+        }
+
+        put(key: K, value: V): V {
+            this.map[key] = value;
+            return value;
+        }
+
+        get(key: any): V {
+            let map = this.map;
+            return map[key];
+        }
+
+        remove(key: any): V {
+            let value = this.map[key];
+            delete this.map[key];
+            return value;
+        }
+
+        clear(): void {
+            this.map = {};
+        }
+
+        putAll(map: Map<K, V>): void {
+            let mapArr = map.toArray();
+
+            for (let item of mapArr) {
+                this.put(item[0], item[1]);
+            }
+
+        }
+
+        size(): number {
+            let map = this.map;
+
+            let count = 0;
+            for (let item in map) {
+                count++;
+            }
+            return count;
+
+        }
+
+        isEmpty(): boolean {
+            return this.size() === 0;
+        }
+
+        containsKey(key: any): boolean {
+
+            return key in this.map;
+
+        }
+
+        containsValue(value: any): boolean {
+            let map = this.map;
+
+            let exists = false;
+            for (let k in map) {
+                if (map[k] === value)
+                    exists = true;
+            }
+            return exists;
+
+        }
+
+        toArray(): Array<{ key: K, value: V }> {
+            let mapArr = [];
+            let map = this.map;
+
+            for (let item in map) {
+                mapArr.push([item, map[item]]);
+            }
+            return mapArr;
+        }
+
+
+        keySet(): Set<K> {
+            let keySet = new Set<K>();
+            let mapArr = this.toArray();
+
+            for (let item of mapArr) {
+                keySet.add(item[0]);
+            }
+            return keySet;
+        }
+
+        values(): Collection<V> {
+            let valCollection = new Collection<V>();
+            let mapArr = this.toArray();
+
+            for (let item of mapArr) {
+                valCollection.add(item[1]);
+            }
+            return valCollection;
+        }
+    }
+
+
     /**
      * A collection with set semantics
      */
@@ -356,11 +547,11 @@ namespace collections {
 
         size(): number;
 
-        isEmpty(): number;
+        isEmpty(): boolean;
 
         containsKey(key: any): boolean;
 
-        containsValue(value: any): number;
+        containsValue(value: any): boolean;
 
         get(key: any): V;
 
