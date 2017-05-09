@@ -1,14 +1,6 @@
 
 namespace calc{
 
-    enum Operator {
-        Addition,
-        Multiplication,
-        Subtraction,
-        Division,
-        None
-    }
-
     enum ButtonType {
         NothingPressed,
         Number,
@@ -35,7 +27,6 @@ namespace calc{
         initialize() {
             this.calcEntries = [];
             this.isEqualsClicked = false;
-            this.activeOperator = Operator.None;
             this.recentButtonType = ButtonType.NothingPressed;
             this.result = 0;
         }
@@ -61,7 +52,6 @@ namespace calc{
             if(this.isNoActionButton()) {
                 this.calcEntries.push('+');
                 this.recentButtonType   = ButtonType.Addition;
-                this.activeOperator  = Operator.Addition;
             }
         }
 
@@ -69,7 +59,6 @@ namespace calc{
             if(this.isNoActionButton()) {
                 this.calcEntries.push('-');
                 this.recentButtonType   = ButtonType.Subtraction;
-                this.activeOperator  = Operator.Subtraction;
             }
         }
 
@@ -77,7 +66,6 @@ namespace calc{
             if(this.isNoActionButton()) {
                 this.calcEntries.push('*');
                 this.recentButtonType   = ButtonType.Multiplication;
-                this.activeOperator  = Operator.Multiplication;
             }
         }
 
@@ -85,7 +73,6 @@ namespace calc{
             if(this.isNoActionButton()) {
                 this.calcEntries.push('/');
                 this.recentButtonType   = ButtonType.Division;
-                this.activeOperator  = Operator.Division;
             }
         }
 
@@ -100,7 +87,6 @@ namespace calc{
                 return new Function('return ' + fn)();
             };
             this.recentButtonType = ButtonType.Equals;
-            this.activeOperator = Operator.None;
             this.isEqualsClicked = true;
             this.result = calculatorResult(calcExpression);
 

@@ -1,13 +1,5 @@
 var calc;
 (function (calc) {
-    var Operator;
-    (function (Operator) {
-        Operator[Operator["Addition"] = 0] = "Addition";
-        Operator[Operator["Multiplication"] = 1] = "Multiplication";
-        Operator[Operator["Subtraction"] = 2] = "Subtraction";
-        Operator[Operator["Division"] = 3] = "Division";
-        Operator[Operator["None"] = 4] = "None";
-    })(Operator || (Operator = {}));
     var ButtonType;
     (function (ButtonType) {
         ButtonType[ButtonType["NothingPressed"] = 0] = "NothingPressed";
@@ -26,7 +18,6 @@ var calc;
         Calculator.prototype.initialize = function () {
             this.calcEntries = [];
             this.isEqualsClicked = false;
-            this.activeOperator = Operator.None;
             this.recentButtonType = ButtonType.NothingPressed;
             this.result = 0;
         };
@@ -49,28 +40,24 @@ var calc;
             if (this.isNoActionButton()) {
                 this.calcEntries.push('+');
                 this.recentButtonType = ButtonType.Addition;
-                this.activeOperator = Operator.Addition;
             }
         };
         Calculator.prototype.subtratctionClick = function () {
             if (this.isNoActionButton()) {
                 this.calcEntries.push('-');
                 this.recentButtonType = ButtonType.Subtraction;
-                this.activeOperator = Operator.Subtraction;
             }
         };
         Calculator.prototype.multiplicationClick = function () {
             if (this.isNoActionButton()) {
                 this.calcEntries.push('*');
                 this.recentButtonType = ButtonType.Multiplication;
-                this.activeOperator = Operator.Multiplication;
             }
         };
         Calculator.prototype.divisionClick = function () {
             if (this.isNoActionButton()) {
                 this.calcEntries.push('/');
                 this.recentButtonType = ButtonType.Division;
-                this.activeOperator = Operator.Division;
             }
         };
         Calculator.prototype.equalsClick = function () {
@@ -82,7 +69,6 @@ var calc;
                 return new Function('return ' + fn)();
             };
             this.recentButtonType = ButtonType.Equals;
-            this.activeOperator = Operator.None;
             this.isEqualsClicked = true;
             this.result = calculatorResult(calcExpression);
             this.calcEntries = [];
